@@ -1,60 +1,85 @@
 package ch.bbw.pg.olat.data.entity;
 
-import ch.bbw.pg.olat.data.AbstractEntity;
-import ch.bbw.pg.olat.data.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import java.util.Set;
-import javax.persistence.ElementCollection;
+import ch.bbw.pg.olat.data.enums.Role;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "ApplicationUser")
+@Table(name = "user")
 public class User extends AbstractEntity {
+    @Column(name = "firstname", nullable = false)
+    private String firstname;
 
-    private String username;
-    private String name;
-    @JsonIgnore
+    @Column(name = "lastname", nullable = false)
+    private String lastname;
+
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "hashed_password", nullable = false)
     private String hashedPassword;
-    @Enumerated(EnumType.STRING)
-    @ElementCollection(fetch = FetchType.EAGER)
-    private Set<Role> roles;
-    @Lob
-    private String profilePictureUrl;
+
+    @Enumerated
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     public String getUsername() {
         return username;
     }
+
+    @Override
+    public String toString() {
+        return getFirstname() + " " + getLastname();
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getName() {
-        return name;
+
+    public Role getRole() {
+        return role;
     }
-    public void setName(String name) {
-        this.name = name;
+
+    public void setRole(Role role) {
+        this.role = role;
     }
+
     public String getHashedPassword() {
         return hashedPassword;
     }
+
     public void setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
     }
-    public Set<Role> getRoles() {
-        return roles;
-    }
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
-    }
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
+
+    public String getEmail() {
+        return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
 }

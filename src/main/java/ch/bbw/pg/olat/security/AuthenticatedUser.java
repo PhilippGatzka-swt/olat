@@ -1,7 +1,7 @@
 package ch.bbw.pg.olat.security;
 
 import ch.bbw.pg.olat.data.entity.User;
-import ch.bbw.pg.olat.data.service.UserRepository;
+import ch.bbw.pg.olat.data.repository.UserRepository;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.server.VaadinServletRequest;
 import java.util.Optional;

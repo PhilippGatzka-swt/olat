@@ -1,9 +1,7 @@
 package ch.bbw.pg.olat.security;
 
 import ch.bbw.pg.olat.data.entity.User;
-import ch.bbw.pg.olat.data.service.UserRepository;
-import java.util.List;
-import java.util.stream.Collectors;
+import ch.bbw.pg.olat.data.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -33,9 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     private static List<GrantedAuthority> getAuthorities(User user) {
-        return user.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                .collect(Collectors.toList());
-
+        return new ArrayList<>(Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole())));
     }
 
 }

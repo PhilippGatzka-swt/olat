@@ -1,40 +1,19 @@
 package ch.bbw.pg.olat.data.service;
 
 import ch.bbw.pg.olat.data.entity.User;
-import java.util.Optional;
-import java.util.UUID;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import ch.bbw.pg.olat.data.enums.Role;
+import ch.bbw.pg.olat.data.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class UserService {
-
-    private final UserRepository repository;
-
-    public UserService(@Autowired UserRepository repository) {
-        this.repository = repository;
+public class UserService extends AbstractService<User, UserRepository> {
+    public UserService(UserRepository repository) {
+        super(repository);
     }
 
-    public Optional<User> get(UUID id) {
-        return repository.findById(id);
+    public List<User> findAllByRole(Role role) {
+        return repository_.findAllByRole(role);
     }
-
-    public User update(User entity) {
-        return repository.save(entity);
-    }
-
-    public void delete(UUID id) {
-        repository.deleteById(id);
-    }
-
-    public Page<User> list(Pageable pageable) {
-        return repository.findAll(pageable);
-    }
-
-    public int count() {
-        return (int) repository.count();
-    }
-
 }

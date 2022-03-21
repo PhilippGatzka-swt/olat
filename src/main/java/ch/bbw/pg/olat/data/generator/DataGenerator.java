@@ -1,11 +1,11 @@
 package ch.bbw.pg.olat.data.generator;
 
-import ch.bbw.pg.olat.data.Role;
+import ch.bbw.pg.olat.data.entity.Course;
 import ch.bbw.pg.olat.data.entity.User;
-import ch.bbw.pg.olat.data.service.UserRepository;
+import ch.bbw.pg.olat.data.enums.Role;
+import ch.bbw.pg.olat.data.repository.CourseRepository;
+import ch.bbw.pg.olat.data.repository.UserRepository;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import java.util.Collections;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -16,34 +16,50 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class DataGenerator {
 
     @Bean
-    public CommandLineRunner loadData(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public CommandLineRunner loadData(PasswordEncoder passwordEncoder, UserRepository userRepository, CourseRepository courseRepository) {
         return args -> {
             Logger logger = LoggerFactory.getLogger(getClass());
             if (userRepository.count() != 0L) {
                 logger.info("Using existing database");
                 return;
             }
-            int seed = 123;
 
             logger.info("Generating demo data");
 
-            logger.info("... generating 2 User entities...");
-            User user = new User();
-            user.setName("John Normal");
-            user.setUsername("user");
-            user.setHashedPassword(passwordEncoder.encode("user"));
-            user.setProfilePictureUrl(
-                    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80");
-            user.setRoles(Collections.singleton(Role.USER));
-            userRepository.save(user);
+            logger.info("... generating 1 User entities...");
             User admin = new User();
-            admin.setName("Emma Powerful");
-            admin.setUsername("admin");
+            admin.setFirstname("Admin");
+            admin.setLastname("Admin");
+            admin.setRole(Role.ADMIN);
+            admin.setUsername("admin.admin");
             admin.setHashedPassword(passwordEncoder.encode("admin"));
-            admin.setProfilePictureUrl(
-                    "https://images.unsplash.com/photo-1607746882042-944635dfe10e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80");
-            admin.setRoles(Set.of(Role.USER, Role.ADMIN));
+            admin.setEmail("gatzka@sowatec.com");
             userRepository.save(admin);
+
+            User student = new User();
+            student.setFirstname("Philipp");
+            student.setLastname("Gatzka");
+            student.setEmail("phil.gatzka@gmail.com");
+            student.setRole(Role.STUDENT);
+            student.setUsername("philipp.gatzka");
+            student.setHashedPassword(passwordEncoder.encode("gatzka"));
+            userRepository.save(student);
+
+            User teacher = new User();
+            teacher.setFirstname("Peter");
+            teacher.setLastname("Rutschmann");
+            teacher.setUsername("Peter.Rutschmann");
+            teacher.setRole(Role.TEACHER);
+            teacher.setHashedPassword(passwordEncoder.encode("teacher"));
+            teacher.setEmail("rutschmann@gmail.com");
+            userRepository.save(teacher);
+
+            Course course = new Course();
+            course.setName("5IA19a");
+            course.setTeacher(teacher);
+            course.addStudent(student);
+            courseRepository.save(course);
+
 
             logger.info("Generated demo data");
         };

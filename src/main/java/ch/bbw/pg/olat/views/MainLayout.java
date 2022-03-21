@@ -2,7 +2,9 @@ package ch.bbw.pg.olat.views;
 
 import ch.bbw.pg.olat.data.entity.User;
 import ch.bbw.pg.olat.security.AuthenticatedUser;
-import ch.bbw.pg.olat.views.personform.PersonFormView;
+import ch.bbw.pg.olat.views.course.detail.CourseDetailView;
+import ch.bbw.pg.olat.views.course.master.CourseMasterView;
+import ch.bbw.pg.olat.views.personform.UserRegisterView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -10,18 +12,12 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.contextmenu.ContextMenu;
 import com.vaadin.flow.component.dependency.NpmPackage;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
-import com.vaadin.flow.component.html.ListItem;
-import com.vaadin.flow.component.html.Nav;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.html.UnorderedList;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.RouteParameters;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.server.auth.AccessAnnotationChecker;
+
 import java.util.Optional;
 
 /**
@@ -39,9 +35,26 @@ public class MainLayout extends AppLayout {
         public MenuItemInfo(String menuTitle, String iconClass, Class<? extends Component> view) {
             this.view = view;
             RouterLink link = new RouterLink();
+
             // Use Lumo classnames for various styling
             link.addClassNames("flex", "mx-s", "p-s", "relative", "text-secondary");
             link.setRoute(view);
+
+            Span text = new Span(menuTitle);
+            // Use Lumo classnames for various styling
+            text.addClassNames("font-medium", "text-s");
+
+            link.add(new LineAwesomeIcon(iconClass), text);
+            add(link);
+        }
+
+        public MenuItemInfo(String menuTitle, String iconClass, Class<? extends Component> view, RouteParameters routeParameters) {
+            this.view = view;
+            RouterLink link = new RouterLink();
+
+            // Use Lumo classnames for various styling
+            link.addClassNames("flex", "mx-s", "p-s", "relative", "text-secondary");
+            link.setRoute(view, routeParameters);
 
             Span text = new Span(menuTitle);
             // Use Lumo classnames for various styling
@@ -132,8 +145,9 @@ public class MainLayout extends AppLayout {
 
     private MenuItemInfo[] createMenuItems() {
         return new MenuItemInfo[]{ //
-                new MenuItemInfo("Person Form", "la la-user", PersonFormView.class), //
-
+                new MenuItemInfo("Register User", "la la-user", UserRegisterView.class), //
+                new MenuItemInfo("Course Master", "la la-columns-solid", CourseMasterView.class), //
+                new MenuItemInfo("Course Detail", "la la-columns-solid", CourseDetailView.class), //
         };
     }
 
@@ -145,7 +159,7 @@ public class MainLayout extends AppLayout {
         if (maybeUser.isPresent()) {
             User user = maybeUser.get();
 
-            Avatar avatar = new Avatar(user.getName(), user.getProfilePictureUrl());
+            Avatar avatar = new Avatar(user.getFirstname() + " " + user.getLastname(), "");
             avatar.addClassNames("me-xs");
 
             ContextMenu userMenu = new ContextMenu(avatar);
@@ -154,7 +168,7 @@ public class MainLayout extends AppLayout {
                 authenticatedUser.logout();
             });
 
-            Span name = new Span(user.getName());
+            Span name = new Span(user.getFirstname() + " " + user.getLastname());
             name.addClassNames("font-medium", "text-s", "text-secondary");
 
             layout.add(avatar, name);
